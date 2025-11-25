@@ -7,7 +7,6 @@ type List<key, value> = {
     [key]: value
 }
 
-
 --[+[Directories]+]--
 local dir: List<string, string> = {
     main_Dir = "src"
@@ -106,6 +105,7 @@ local function Bundle(): ()
         },
         {shell = true, stdin = "inherit"} :: ProcessOptions
     )
+    print("Bundling output..", result)
 
     local runner = process.run("./build/main")
     print(runner)
