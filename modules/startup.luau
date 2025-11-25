@@ -7,6 +7,7 @@ type List<key, value> = {
     [key]: value
 }
 
+
 --[+[Directories]+]--
 local dir: List<string, string> = {
     main_Dir = "src"
@@ -27,10 +28,20 @@ local include_List = {
     "toml",
     "luaurc"
 }
+
+local env_addList: {[string]: string} = { --Used these for testing, use as reference
+    -- __GLX_VENDOR_LIBRARY_NAME = "mesa",
+    -- sam = "true",
+    -- MESA_GL_VERSION_OVERRIDE = "4.6",
+    -- MESA_LOADER_DRIVER_OVERRIDE = "zink",
+    -- GALLIUM_DRIVER = "zink" 
+}
+
 --[+[Configuration]+]--
 local rc_Path = fs.realPath(".luaurc")
 local zune_toml = fs.realPath("zune.toml")
 local flags = "--debug"
+local env = process.env
 -------------------
 local main = "./src/main.luau"
 
@@ -50,6 +61,10 @@ local function Bundle(): ()
     }
     local include_Scripts: string = main..""
     local include_Files: string = "-f "
+
+    for Index,Env in pairs(env_addList) do
+        env[Index] = Env
+    end
 
     local function recurse(directories: List<string, string>, base_Dir: string)
         for _,directory: string in pairs(directories :: List<string, string>) do
@@ -105,9 +120,12 @@ local function Bundle(): ()
         },
         {shell = true, stdin = "inherit"} :: ProcessOptions
     )
-    print("Bundling output..", result)
-
-    local runner = process.run("./build/main")
+    print(env)
+    local runner = process.run(
+        "./build/main",
+        {}, 
+        {env = env} :: ProcessOptions
+    )
     print(runner)
 end; Bundle()
 
