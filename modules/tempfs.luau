@@ -2,7 +2,7 @@
 local fs = zune.fs
 local platform = zune.platform
 local process = zune.process
-local Case = require("@Case")
+local Case = require("./case")
 local path = fs.path
 ------------------
 local temp_Dir: string = ""
